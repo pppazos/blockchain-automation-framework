@@ -6,4 +6,4 @@ kubectl:
   os: "linux"    # use "darwin" for MacOS X, "windows" for Windows
   arch: "amd64"  # other possible values: "386","arm64","arm","ppc64le","s390x"
   bin_directory: "~/bin"
-  checksum: "sha256:98e8aea149b00f653beeb53d4bd27edda9e73b48fed156c4a0aa1dabe4b1794c"
+  checksum: "sha256:a9f2dadcb4a721371e2db8cf25217925fed1a77bb2c2d28624c604ab6c3035db"
