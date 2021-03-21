@@ -6,7 +6,7 @@
   vars:
     type: "expressapi-fabric"
     name: "{{ organization_data.name | lower }}"
-    charts_dir: "{{ organization_data.gitops.chart_source }}"
+    charts_dir: "examples/supplychain-app/charts"
     expressapi_image: "supplychain_fabric:express_app_latest"
     url: "http://{{ organization_data.name | lower }}-restserver.{{ component_ns }}"
     peer_name: "{{ peer_data.name }}"
