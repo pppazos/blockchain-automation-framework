@@ -6,7 +6,7 @@
   vars:
     type: "restserver"
     name: "{{ organization_data.name | lower }}"
-    charts_dir: "{{ organization_data.gitops.chart_source }}"
+    charts_dir: "examples/supplychain-app/charts"
     peer_name: "{{ peer_data.name }}"
     peer_restserver_port: "{{ peer_data.restserver.port }}"
     peer_restserver_targetport: "{{ peer_data.restserver.targetPort }}"
