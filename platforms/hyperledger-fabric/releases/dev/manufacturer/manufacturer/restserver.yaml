@@ -7,7 +7,7 @@ metadata:
     fluxcd.io/automated: "false"
 spec:
   chart:
-    path: platforms/hyperledger-fabric/charts/fabric-restserver
+    path: examples/supplychain-app/charts/fabric-restserver
     git: https://github.com/pppazos/blockchain-automation-framework.git
     ref: local
   releaseName: manufacturer-restserver

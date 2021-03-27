@@ -7,7 +7,7 @@ metadata:
     fluxcd.io/automated: "false"
 spec:
   chart:
-    path: {{ component_gitops.chart_source }}/fabric-restserver
+    path: examples/supplychain-app/charts/fabric-restserver
     git: {{ component_gitops.git_url }}
     ref: {{ component_gitops.branch }}
   releaseName: {{ name }}-restserver
