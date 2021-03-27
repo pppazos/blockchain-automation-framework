@@ -3,7 +3,6 @@
 # This task will try for a maximum of 10 times with an interval of
 # 60 seconds between each try
 - name: 'Wait for {{ component_type }} {{ component_name }} in {{ namespace }}'
-  debugger: on_failed
   k8s_info:
     kind: "Pod"
     namespace: "{{ namespace }}"
@@ -46,5 +45,5 @@
   register: component_data
   retries: "{{ network.env.retry_count}}"
   delay: "{{ delay | default(30) }}"
-  until: component_data is defined and component_data.resources|length > 0
+  until: component_data.resources is defined and component_data.resources|length > 0
   when: component_type == "Pod"

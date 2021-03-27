@@ -35,7 +35,6 @@
 
 # Wait for express-api Pod to run
 - name: "Waiting for express-api pod in {{ component_ns }}"
-  debugger: always
   include_role:
     name: "{{ playbook_dir }}/../../../platforms/shared/configuration/roles/check/helm_component"
   vars:
