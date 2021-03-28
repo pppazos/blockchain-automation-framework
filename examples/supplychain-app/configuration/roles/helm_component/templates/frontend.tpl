@@ -7,7 +7,7 @@ metadata:
     fluxcd.io/automated: "false"
 spec:
   chart:
-    path: {{ component_gitops.chart_source }}/frontend
+    path: examples/supplychain-app/charts/frontend
     git: "{{ component_gitops.git_url }}"
     ref: "{{ component_gitops.branch }}"
   releaseName: {{ peer_name }}{{ network.type }}-frontend
