@@ -2,7 +2,7 @@
 # docker build . -t baf-build
 # docker run -v $(pwd):/home/blockchain-automation-framework/ baf-build
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # Create working directory
 WORKDIR /home/
@@ -15,7 +15,7 @@ RUN apt-get update -y && \
         curl \
         unzip \
         build-essential \
-        default-jre \
+        openjdk-14-jdk \
 	    openssh-client \
         gcc \
         git \
