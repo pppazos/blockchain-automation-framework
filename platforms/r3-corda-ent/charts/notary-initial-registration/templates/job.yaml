@@ -236,8 +236,8 @@ spec:
             NETWORK_ROOT_TRUSTSTORE={{ $.Values.nodeConf.volume.baseDir }}/DATA/trust-stores/network-root-truststore.jks
             NETWORK_ROOT_TRUSTSTORE_PASSWORD=$(cat {{ $.Values.nodeConf.volume.baseDir }}/DATA/truststore/rootcats)
 
-            yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/networkmap.crt -storepass changeit -alias {{ .Values.networkServices.networkMapDomain }} -keystore $NETWORK_ROOT_TRUSTSTORE
-            yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/idman.crt -storepass changeit -alias {{ .Values.networkServices.idmanDomain }} -keystore $NETWORK_ROOT_TRUSTSTORE
+            yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/networkmap.crt -storepass $NETWORK_ROOT_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.networkMapDomain }} -keystore $NETWORK_ROOT_TRUSTSTORE
+            yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/idman.crt -storepass $NETWORK_ROOT_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.idmanDomain }} -keystore $NETWORK_ROOT_TRUSTSTORE
 
 
             while true
