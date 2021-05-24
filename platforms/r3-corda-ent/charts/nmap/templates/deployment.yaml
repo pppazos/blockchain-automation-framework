@@ -347,7 +347,7 @@ spec:
 
             if [ "${EXIT_CODE}" -ne "0" ]
             then
-                HOW_LONG=1200
+                HOW_LONG=120
                 echo
                 echo "Network Map: setting network parameters failed - exit code: ${EXIT_CODE} (error)"
                 echo
