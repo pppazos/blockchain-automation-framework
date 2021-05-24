@@ -211,6 +211,7 @@ spec:
           command: ["/bin/bash", "-c"]
           args:
           - |-
+            set -x
             if [ -e /certcheck/present.txt ]
             then
               echo "Certificates already present in the vault. Skipping.."
@@ -473,6 +474,7 @@ spec:
 
             #creating a dummy file to perform check if last line is executed or not.
             touch ${BASE_DIR}/DATA/done.txt
+            sleep 600
           volumeMounts:
           - name: certcheck
             mountPath: /certcheck
