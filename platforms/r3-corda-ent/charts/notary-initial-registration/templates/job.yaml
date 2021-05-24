@@ -181,6 +181,7 @@ spec:
           command: ["/bin/bash", "-c"]
           args:
           - |-
+            set -x
             rm -f certificates/done.txt
             echo 'networkServices {
                 doormanURL="{{ .Values.networkServices.doormanURL }}"
