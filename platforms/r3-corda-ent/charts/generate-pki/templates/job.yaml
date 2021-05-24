@@ -392,7 +392,7 @@ spec:
                         file = "./DATA/idman/crls/ssl.crl"
                     }               
                 },
-                "corda_ssl_idman_ambassador::CORDA_SSL_IDENTITY_MANAGER" {
+                "cordasslidmanambassador::CORDA_SSL_IDENTITY_MANAGER" {
                     key = {
                         type = LOCAL
                         includeIn = ["corda-ssl-identity-manager-keys"]
@@ -417,7 +417,7 @@ spec:
                         file = "./DATA/networkmap/crls/ssl.crl"
                     }
                 },
-                "corda_ssl_nmap_ambassador::CORDA_SSL_NETWORK_MAP" {
+                "cordasslnmapambassador::CORDA_SSL_NETWORK_MAP" {
                     key = {
                         type = LOCAL
                         includeIn = ["corda-ssl-network-map-keys"]
