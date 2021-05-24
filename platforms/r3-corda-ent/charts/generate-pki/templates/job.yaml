@@ -475,7 +475,7 @@ spec:
 
             #creating a dummy file to perform check if last line is executed or not.
             touch ${BASE_DIR}/DATA/done.txt
-            sleep 600
+            #sleep 120
           volumeMounts:
           - name: certcheck
             mountPath: /certcheck
