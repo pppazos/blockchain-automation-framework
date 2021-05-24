@@ -215,7 +215,8 @@ spec:
             if [ -e /certcheck/present.txt ]
             then
               echo "Certificates already present in the vault. Skipping.."
-              exit 0
+              echo "TMP!!!!!!!!!!!!!!!!"
+              #exit 0
             fi
             rm -r ${BASE_DIR}/DATA/done.txt
 
