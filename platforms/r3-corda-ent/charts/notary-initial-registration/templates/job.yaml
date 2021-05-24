@@ -275,6 +275,7 @@ spec:
                 echo
                 pwd
                 ls -al 
+                sleep 1200
             else
                 HOW_LONG={{ .Values.sleepTime }}
                 echo
@@ -283,6 +284,7 @@ spec:
             fi
 
             sleep ${HOW_LONG}
+
             touch ${BASE_DIR}/certificates/done.txt
           volumeMounts:
           - name: notary-etc
