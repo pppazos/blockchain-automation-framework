@@ -309,7 +309,7 @@ spec:
             sshdPort = {{ .Values.service.shell.sshdPort }}
             user = "{{ .Values.service.shell.user }}"
             password = "{{ .Values.service.shell.password }}"
-          }' >> etc/nmap.conf
+          }' > etc/nmap.conf
 
           export NETWORKMAP_SSL=$(cat /opt/corda/DATA/ssl/networkmapssl)
           sed -i -e "s*NETWORKMAP_SSL*${NETWORKMAP_SSL}*g" etc/nmap.conf
@@ -346,7 +346,7 @@ spec:
 
             if [ "${EXIT_CODE}" -ne "0" ]
             then
-                HOW_LONG=120
+                HOW_LONG=1200
                 echo
                 echo "Network Map: setting network parameters failed - exit code: ${EXIT_CODE} (error)"
                 echo

@@ -315,7 +315,7 @@ spec:
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/root"
                         file = "./DATA/idman/crls/root.crl"
                     }
-                },
+                },                              
                 "subordinateca" = {
                     key = {
                         type = LOCAL
@@ -366,7 +366,7 @@ spec:
                     role = NETWORK_MAP
                     issuesCertificates = false
                     subject = {{ .Values.subjects.networkmap | quote }}
-                },
+                },             
                 "::CORDA_SSL_ROOT" {
                     key = {
                         type = LOCAL
@@ -389,8 +389,21 @@ spec:
                     crl = {
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
                         file = "./DATA/idman/crls/ssl.crl"
-                    }
+                    }               
                 },
+                "corda_ssl_idman_ambassador::CORDA_SSL_IDENTITY_MANAGER" {
+                    key = {
+                        type = LOCAL
+                        includeIn = ["corda-ssl-identity-manager-keys"]
+                        algorithm = "ECDSA_SECP256R1_SHA256"
+                        password = "IDMAN_SSL"
+                    }
+                    crl = {
+                        crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
+                        file = "./DATA/idman/crls/ssl.crl"
+                    }
+                    subject = "CN={{ .Values.identityManager.publicIp }}"                   
+                },                
                 "::CORDA_SSL_NETWORK_MAP" {
                     key = {
                         type = LOCAL
@@ -403,6 +416,19 @@ spec:
                         file = "./DATA/networkmap/crls/ssl.crl"
                     }
                 },
+                "corda_ssl_nmap_ambassador::CORDA_SSL_NETWORK_MAP" {
+                    key = {
+                        type = LOCAL
+                        includeIn = ["corda-ssl-network-map-keys"]
+                        algorithm = "ECDSA_SECP256R1_SHA256"
+                        password = "NETWORKMAP_SSL"
+                    }
+                    crl = {
+                        crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
+                        file = "./DATA/networkmap/crls/ssl.crl"
+                    }
+                    subject = "CN={{ .Values.cenmServices.publicIp }}"
+                },                
                 "::CORDA_SSL_SIGNER" {
                     key = {
                         type = LOCAL
@@ -478,7 +504,8 @@ spec:
           command: ["sh", "-c"]
           args:
           - |-
-            #!/usr/bin/env sh
+            #!/usr/bin/env sh -x
+            set -x
             validateVaultResponse () {
               if echo ${2} | grep "errors"; then
                  echo "ERROR: unable to retrieve ${1}: ${2}"
@@ -504,6 +531,8 @@ spec:
                 if [ -e done.txt ]
                 then
                   cd ${BASE_DIR}/DATA/root
+                  pwd
+                  ls -lisaR
                   echo "found root certificates, performing vault put for root path"
                   (echo '{'
                   for FILE in *;
@@ -536,6 +565,8 @@ spec:
                 if [ -e done.txt ]
                 then
                   cd ${BASE_DIR}/DATA/signer
+                  pwd
+                  ls -lisaR
                   echo "found signer certificates, performing vault put for signer path"
                   (echo '{'
                   for FILE in *;
@@ -601,7 +632,7 @@ spec:
             if [ "$COUNTER" -gt {{ $.Values.vault.retries }} ]
             then
                 echo "Retry attempted $COUNTER times, no files found. Giving up!"
-                exit 1
+                exit 1 
                 break
             fi
             echo "completed"
