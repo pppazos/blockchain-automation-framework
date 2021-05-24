@@ -340,7 +340,8 @@ spec:
               --set-network-parameters {{ .Values.config.configPath }}/network-parameters-initial.conf \
               --network-truststore DATA/trust-stores/network-root-truststore.jks \
               --truststore-password ${ROOTCA_TRUSTSTORE} \
-              --root-alias cordarootca
+              --root-alias cordarootca \
+              --logging-level DEBUG
 
             EXIT_CODE=${?}
 
