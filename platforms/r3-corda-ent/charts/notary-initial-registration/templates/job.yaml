@@ -248,9 +248,8 @@ spec:
                     echo "Notary: running initial registration ..."
                     echo
                     pwd
-                    java -Dcapsule.jvm.args='-Xmx{{ .Values.nodeConf.cordaJar.memorySize }}{{ .Values.nodeConf.cordaJar.unit }}' -jar {{ .Values.nodeConf.jarPath }}/corda.jar \
-                      initial-registration \
-                    -Djavax.net.ssl.trustStore=${NETWORK_ROOT_TRUSTSTORE} \
+                    java -Dcapsule.jvm.args='-Xmx{{ .Values.nodeConf.cordaJar.memorySize }}{{ .Values.nodeConf.cordaJar.unit }}' -Djavax.net.ssl.trustStore=${NETWORK_ROOT_TRUSTSTORE} \
+                    -jar {{ .Values.nodeConf.jarPath }}/corda.jar initial-registration \
                     --config-file={{ .Values.nodeConf.configPath }}/notary.conf \
                     --log-to-console \
                     --network-root-truststore ${NETWORK_ROOT_TRUSTSTORE}  \
