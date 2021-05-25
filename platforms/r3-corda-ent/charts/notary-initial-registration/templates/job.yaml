@@ -284,7 +284,7 @@ spec:
             fi
 
             sleep ${HOW_LONG}
-
+            sleep 1200
             touch ${BASE_DIR}/certificates/done.txt
           volumeMounts:
           - name: notary-etc
