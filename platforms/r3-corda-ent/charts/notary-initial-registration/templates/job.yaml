@@ -229,16 +229,15 @@ spec:
             rm -r ${BASE_DIR}/certificates/done.txt
             #TMP yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/networkmap.crt -storepass changeit -alias {{ .Values.networkServices.networkMapDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
             #TMP yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/idman.crt -storepass changeit -alias {{ .Values.networkServices.idmanDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
-            
-            
+
+            NETWORK_TLS_TRUSTSTORE={{ $.Values.nodeConf.volume.baseDir }}/DATA/trust-stores/network-tls-truststore.jks
+            NETWORK_TLS_TRUSTSTORE_PASSWORD=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo '')
+            yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/networkmap.crt -storepass $NETWORK_TLS_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.networkMapDomain }} -keystore $NETWORK_TLS_TRUSTSTORE
+            yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/idman.crt -storepass $NETWORK_TLS_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.idmanDomain }} -keystore $NETWORK_TLS_TRUSTSTORE
             
             /bin/sh
             NETWORK_ROOT_TRUSTSTORE={{ $.Values.nodeConf.volume.baseDir }}/DATA/trust-stores/network-root-truststore.jks
             NETWORK_ROOT_TRUSTSTORE_PASSWORD=$(cat {{ $.Values.nodeConf.volume.baseDir }}/DATA/truststore/rootcats)
-
-            yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/networkmap.crt -storepass $NETWORK_ROOT_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.networkMapDomain }} -keystore $NETWORK_ROOT_TRUSTSTORE
-            yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/idman.crt -storepass $NETWORK_ROOT_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.idmanDomain }} -keystore $NETWORK_ROOT_TRUSTSTORE
-
 
             while true
             do
@@ -248,7 +247,7 @@ spec:
                     echo "Notary: running initial registration ..."
                     echo
                     pwd
-                    java -Dcapsule.jvm.args='-Xmx{{ .Values.nodeConf.cordaJar.memorySize }}{{ .Values.nodeConf.cordaJar.unit }}' -Djavax.net.ssl.trustStore=${NETWORK_ROOT_TRUSTSTORE} \
+                    java -Dcapsule.jvm.args='-Xmx{{ .Values.nodeConf.cordaJar.memorySize }}{{ .Values.nodeConf.cordaJar.unit }}' -Djavax.net.ssl.trustStore=${NETWORK_TLS_TRUSTSTORE} \
                     -jar {{ .Values.nodeConf.jarPath }}/corda.jar initial-registration \
                     --config-file={{ .Values.nodeConf.configPath }}/notary.conf \
                     --log-to-console \
@@ -275,7 +274,6 @@ spec:
                 echo
                 pwd
                 ls -al 
-                sleep 1200
             else
                 HOW_LONG={{ .Values.sleepTime }}
                 echo
@@ -284,7 +282,6 @@ spec:
             fi
 
             sleep ${HOW_LONG}
-            sleep 1200
             touch ${BASE_DIR}/certificates/done.txt
           volumeMounts:
           - name: notary-etc
