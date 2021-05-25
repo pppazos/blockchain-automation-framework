@@ -406,7 +406,7 @@ spec:
             echo "Waiting for network parameters to be set..."
           done
           echo "Network parameters have been set!"
-          #TMP yes | keytool -importcert -file ./DATA/idman.crt -storepass changeit -alias {{ .Values.serviceLocations.identityManager.domain }} -keystore /usr/lib/jvm/zulu-8-amd64/jre/lib/security/cacerts
+          yes | keytool -importcert -file ./DATA/idman.crt -storepass changeit -alias {{ .Values.serviceLocations.identityManager.domain }} -keystore /usr/lib/jvm/zulu-8-amd64/jre/lib/security/cacerts
           
           /bin/sh
           if [ -f {{ .Values.config.jarPath }}/networkmap.jar ]
