@@ -202,10 +202,10 @@ spec:
                   fi
                   COUNTER=`expr "$COUNTER" + 1`
               done
-              LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/{{ .Values.serviceLocations.identityManager.name }}/tlscerts | jq -r 'if .errors then . else . end')
-              validateVaultResponse "${CERTS_SECRET_PREFIX}/{{ .Values.serviceLocations.identityManager.name }}/tlscerts" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
-              IDMAN_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["tlscacerts"]')
-              echo "${IDMAN_CERT}" | base64 -d > ${MOUNT_PATH}/idman.crt
+              # LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/{{ .Values.serviceLocations.identityManager.name }}/tlscerts | jq -r 'if .errors then . else . end')
+              # validateVaultResponse "${CERTS_SECRET_PREFIX}/{{ .Values.serviceLocations.identityManager.name }}/tlscerts" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
+              # IDMAN_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["tlscacerts"]')
+              # echo "${IDMAN_CERT}" | base64 -d > ${MOUNT_PATH}/idman.crt
 
               #fetching networkmap ssl credentials from vault
               mkdir -p ${MOUNT_PATH}/ssl
@@ -309,7 +309,7 @@ spec:
             sshdPort = {{ .Values.service.shell.sshdPort }}
             user = "{{ .Values.service.shell.user }}"
             password = "{{ .Values.service.shell.password }}"
-          }' >> etc/nmap.conf
+          }' > etc/nmap.conf
 
           export NETWORKMAP_SSL=$(cat /opt/corda/DATA/ssl/networkmapssl)
           sed -i -e "s*NETWORKMAP_SSL*${NETWORKMAP_SSL}*g" etc/nmap.conf
@@ -340,7 +340,8 @@ spec:
               --set-network-parameters {{ .Values.config.configPath }}/network-parameters-initial.conf \
               --network-truststore DATA/trust-stores/network-root-truststore.jks \
               --truststore-password ${ROOTCA_TRUSTSTORE} \
-              --root-alias cordarootca
+              --root-alias cordarootca \
+              --logging-level DEBUG
 
             EXIT_CODE=${?}
 
@@ -405,7 +406,7 @@ spec:
             echo "Waiting for network parameters to be set..."
           done
           echo "Network parameters have been set!"
-          yes | keytool -importcert -file ./DATA/idman.crt -storepass changeit -alias {{ .Values.serviceLocations.identityManager.domain }} -keystore /usr/lib/jvm/zulu-8-amd64/jre/lib/security/cacerts
+          #yes | keytool -importcert -file ./DATA/idman.crt -storepass changeit -alias {{ .Values.serviceLocations.identityManager.domain }} -keystore /usr/lib/jvm/zulu-8-amd64/jre/lib/security/cacerts
           
           /bin/sh
           if [ -f {{ .Values.config.jarPath }}/networkmap.jar ]
