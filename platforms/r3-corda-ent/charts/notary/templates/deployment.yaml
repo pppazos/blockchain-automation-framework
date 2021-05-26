@@ -354,10 +354,10 @@ spec:
               echo "CENM: starting Notary node ..."
               echo
               # command to run corda jar, we are setting javax.net.ssl.keyStore as ${BASE_DIR}/certificates/sslkeystore.jks since keystore gets reset when using h2 ssl 
-              java -Djavax.net.ssl.keyStore=${BASE_DIR}/certificates/sslkeystore.jks \
-                   -Djavax.net.ssl.keyStorePassword=${KEYSTORE_PASSWORD} \  
-                   -Djavax.net.ssl.trustStore=${BASE_DIR}/certificates/corda-ssl-trust-store.jks \
-                   -jar {{ .Values.nodeConf.jarPath }}/corda.jar -f ${BASE_DIR}/etc/notary.conf --base-directory=${BASE_DIR} 
+              java -Djavax.net.ssl.trustStore=${BASE_DIR}/certificates/corda-ssl-trust-store.jks \
+                   -Djavax.net.ssl.keyStore=${BASE_DIR}/certificates/sslkeystore.jks \
+                   -Djavax.net.ssl.keyStorePassword=${KEYSTORE_PASSWORD} \
+                   -jar {{ .Values.nodeConf.jarPath }}/corda.jar -f ${BASE_DIR}/etc/notary.conf --base-directory=${BASE_DIR} -v --logging-level=DEBUG
               EXIT_CODE=${?}
           else
               echo "Missing notary jar file in {{ .Values.nodeConf.jarPath }} folder:"
