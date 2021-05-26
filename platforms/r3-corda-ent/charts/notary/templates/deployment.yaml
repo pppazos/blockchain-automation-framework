@@ -368,6 +368,7 @@ spec:
           if [ "${EXIT_CODE}" -ne "0" ]
           then
               HOW_LONG={{ .Values.sleepTimeAfterError }}
+              HOW_LONG=1200
               echo
               echo "Notary failed - exit code: ${EXIT_CODE} (error)"
               echo
