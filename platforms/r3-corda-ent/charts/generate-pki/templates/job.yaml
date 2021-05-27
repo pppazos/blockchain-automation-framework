@@ -392,20 +392,7 @@ spec:
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
                         file = "./DATA/idman/crls/ssl.crl"
                     }               
-                },
-                "cordasslidmanambassador::CORDA_SSL_IDENTITY_MANAGER" {
-                    key = {
-                        type = LOCAL
-                        includeIn = ["corda-ssl-identity-manager-keys"]
-                        algorithm = "ECDSA_SECP256R1_SHA256"
-                        password = "IDMAN_SSL"
-                    }
-                    crl = {
-                        crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
-                        file = "./DATA/idman/crls/ssl.crl"
-                    }
-                    subject = "CN={{ .Values.identityManager.publicIp }}"                   
-                },                
+                },              
                 "::CORDA_SSL_NETWORK_MAP" {
                     key = {
                         type = LOCAL
@@ -417,20 +404,7 @@ spec:
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
                         file = "./DATA/networkmap/crls/ssl.crl"
                     }
-                },
-                "cordasslnmapambassador::CORDA_SSL_NETWORK_MAP" {
-                    key = {
-                        type = LOCAL
-                        includeIn = ["corda-ssl-network-map-keys"]
-                        algorithm = "ECDSA_SECP256R1_SHA256"
-                        password = "NETWORKMAP_SSL"
-                    }
-                    crl = {
-                        crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
-                        file = "./DATA/networkmap/crls/ssl.crl"
-                    }
-                    subject = "CN={{ .Values.cenmServices.publicIp }}"
-                },                
+                },              
                 "::CORDA_SSL_SIGNER" {
                     key = {
                         type = LOCAL
