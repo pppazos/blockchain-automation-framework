@@ -91,6 +91,9 @@ spec:
                       validateVaultResponse "${CERTS_SECRET_PREFIX}/root/certs" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
                       network_root_truststore=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["network-root-truststore.jks"]')
                       echo "${network_root_truststore}" | base64 -d > ${MOUNT_PATH}/trust-stores/network-root-truststore.jks
+                      # ssl trust store
+                      corda_ssl_trust_store=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["corda-ssl-trust-store.jks"]')
+                      echo "${corda_ssl_trust_store}" | base64 -d > ${MOUNT_PATH}/trust-stores/corda-ssl-trust-store.jks                      
                       echo "Successfully got network truststore certifcates"
                       break
                     fi 
@@ -250,12 +253,13 @@ spec:
             export KEYSTORE_PASSWORD=$(cat DATA/credentials/keystorepass)
             sed -i -e "s*KEYSTORE_PASSWORD*${KEYSTORE_PASSWORD}*g" etc/node.conf
   
-            yes | keytool -importcert -file DATA/tlscerts/networkmap.crt -storepass changeit -alias {{ .Values.networkServices.networkMapDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
-            yes | keytool -importcert -file DATA/tlscerts/idman.crt -storepass changeit -alias {{ .Values.networkServices.idmanDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
+            #yes | keytool -importcert -file DATA/tlscerts/networkmap.crt -storepass changeit -alias {{ .Values.networkServices.networkMapDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
+            #yes | keytool -importcert -file DATA/tlscerts/idman.crt -storepass changeit -alias {{ .Values.networkServices.idmanDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
             
             /bin/sh
                       
             # Network root trust store path and password
+            CORDA_SSL_TRUSTSTORE={{ $.Values.nodeConf.volume.baseDir }}/DATA/trust-stores/corda-ssl-trust-store.jks
             NETWORK_ROOT_TRUSTSTORE=DATA/trust-stores/network-root-truststore.jks
             NETWORK_ROOT_TRUSTSTORE_PASSWORD=$(cat DATA/credentials/rootpass)
 
@@ -292,7 +296,8 @@ spec:
                     echo "Node: running initial registration ..."
                     echo
                     pwd
-                    java -jar {{ .Values.nodeConf.jarPath }}/corda.jar \
+                    java -Djavax.net.ssl.trustStore=${CORDA_SSL_TRUSTSTORE} \
+                      -jar {{ .Values.nodeConf.jarPath }}/corda.jar \
                       initial-registration \
                     --config-file={{ .Values.nodeConf.configPath }}/node.conf \
                     --log-to-console \
