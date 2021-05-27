@@ -252,7 +252,8 @@ spec:
                     --log-to-console \
                     --network-root-truststore ${NETWORK_ROOT_TRUSTSTORE}  \
                     --base-directory=${BASE_DIR} \
-                    --network-root-truststore-password ${NETWORK_ROOT_TRUSTSTORE_PASSWORD}
+                    --network-root-truststore-password ${NETWORK_ROOT_TRUSTSTORE_PASSWORD} \
+                    --logging-level DEBUG
                     
                     EXIT_CODE=${?}
                 else
