@@ -92,9 +92,6 @@ spec:
                       validateVaultResponse "${CERTS_SECRET_PREFIX}/root/certs" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
                       network_root_truststore=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["network-root-truststore.jks"]')
                       echo "${network_root_truststore}" | base64 -d > ${MOUNT_PATH}/trust-stores/network-root-truststore.jks
-                      # ssl trust store
-                      corda_ssl_trust_store=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["corda-ssl-trust-store.jks"]')
-                      echo "${corda_ssl_trust_store}" | base64 -d > ${MOUNT_PATH}/trust-stores/corda-ssl-trust-store.jks                      
                       echo "Successfully got network truststore certifcates"
                       break
                     fi 
@@ -256,13 +253,19 @@ spec:
             export KEYSTORE_PASSWORD=$(cat DATA/credentials/keystorepass)
             sed -i -e "s*KEYSTORE_PASSWORD*${KEYSTORE_PASSWORD}*g" etc/node.conf
   
+
             #yes | keytool -importcert -file DATA/tlscerts/networkmap.crt -storepass changeit -alias {{ .Values.networkServices.networkMapDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
             #yes | keytool -importcert -file DATA/tlscerts/idman.crt -storepass changeit -alias {{ .Values.networkServices.idmanDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
+            
+            SSL_TRUSTSTORE_PASSWORD=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13)
+            CORDA_SSL_TRUSTSTORE=DATA/trust-stores/corda-ssl-custom-trust-store.jks
+            yes | keytool -importcert -file DATA/tlscerts/networkmap.crt -storepass $SSL_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.networkMapDomain }} -keystore $CORDA_SSL_TRUSTSTORE
+            yes | keytool -importcert -file DATA/tlscerts/idman.crt -storepass $SSL_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.idmanDomain }} -keystore $CORDA_SSL_TRUSTSTORE
             
             /bin/sh
                       
             # Network root trust store path and password
-            CORDA_SSL_TRUSTSTORE=DATA/trust-stores/corda-ssl-trust-store.jks
+            
             NETWORK_ROOT_TRUSTSTORE=DATA/trust-stores/network-root-truststore.jks
             NETWORK_ROOT_TRUSTSTORE_PASSWORD=$(cat DATA/credentials/rootpass)
 
