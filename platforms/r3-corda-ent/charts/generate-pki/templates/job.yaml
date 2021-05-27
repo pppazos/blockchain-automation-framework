@@ -82,7 +82,7 @@ spec:
                 validateVaultResponse "${CERTS_SECRET_PREFIX}/root/certs" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
                 echo "Certificates present in vault"
                 touch ${MOUNT_PATH}/present.txt
-              fi 
+              fi
 
               echo "Done checking for certificates in vault"
           volumeMounts:
@@ -265,7 +265,7 @@ spec:
                     type = LOCAL
                     file = "./DATA/root/corda-ssl-root-keys.jks"
                     password = "ROOT_SSL"
-                }    
+                }
             }
             certificatesStores = {
                 "network-root-trust-store" = {
@@ -317,7 +317,7 @@ spec:
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/root"
                         file = "./DATA/idman/crls/root.crl"
                     }
-                },                              
+                },
                 "subordinateca" = {
                     key = {
                         type = LOCAL
@@ -368,7 +368,7 @@ spec:
                     role = NETWORK_MAP
                     issuesCertificates = false
                     subject = {{ .Values.subjects.networkmap | quote }}
-                },             
+                },
                 "::CORDA_SSL_ROOT" {
                     key = {
                         type = LOCAL
@@ -392,8 +392,8 @@ spec:
                     crl = {
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
                         file = "./DATA/idman/crls/ssl.crl"
-                    }               
-                },              
+                    }
+                },
                 "::CORDA_SSL_NETWORK_MAP" {
                     key = {
                         type = LOCAL
@@ -405,7 +405,7 @@ spec:
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
                         file = "./DATA/networkmap/crls/ssl.crl"
                     }
-                },              
+                },
                 "::CORDA_SSL_SIGNER" {
                     key = {
                         type = LOCAL
@@ -417,7 +417,7 @@ spec:
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
                         file = "./DATA/signer/crls/ssl.crl"
                     }
-                }    
+                }
             }' >> {{ .Values.configPath }}/pki.conf
 
             #replacement of the variables in the pki conf file
@@ -490,7 +490,7 @@ spec:
                  exit 1
               fi
             }
-            
+
             if [ -e /certcheck/present.txt ]
             then
               echo "Certificates already present in the vault. Skipping.."
@@ -502,7 +502,7 @@ spec:
             VAULT_TOKEN=$(curl -sS --request POST ${VAULT_ADDR}/v1/auth/${KUBERNETES_AUTH_PATH}/login -H "Content-Type: application/json" -d '{"role":"'"${VAULT_APP_ROLE}"'","jwt":"'"${KUBE_SA_TOKEN}"'"}' | jq -r 'if .errors then . else .auth.client_token end')
             validateVaultResponse 'vault login token' "${VAULT_TOKEN}"
             cd ${BASE_DIR}/DATA
-            # putting certificate for cenm root 
+            # putting certificate for cenm root
             COUNTER=1
             while [ "$COUNTER" -lt {{ $.Values.vault.retries }} ]
             do
@@ -610,7 +610,7 @@ spec:
             if [ "$COUNTER" -gt {{ $.Values.vault.retries }} ]
             then
                 echo "Retry attempted $COUNTER times, no files found. Giving up!"
-                exit 1 
+                exit 1
                 break
             fi
             echo "completed"
