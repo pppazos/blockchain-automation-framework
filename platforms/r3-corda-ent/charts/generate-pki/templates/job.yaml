@@ -376,7 +376,6 @@ spec:
                         algorithm = "ECDSA_SECP256R1_SHA256"
                         password = "ROOT_SSL"
                     }
-                    subject = {{ .Values.subjects.rootca | quote }}
                     crl = {
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
                         file = "./DATA/root/crls/ssl.crl"
