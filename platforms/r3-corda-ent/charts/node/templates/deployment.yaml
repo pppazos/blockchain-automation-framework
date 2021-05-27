@@ -296,6 +296,7 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
         - |-
+          set -x
           mkdir -p ${BASE_DIR}/etc
           echo 'myLegalName: "{{ .Values.nodeConf.legalName }}"
           emailAddress: "{{ .Values.nodeConf.emailAddress }}"
@@ -357,7 +358,7 @@ spec:
           {{- if eq .Values.dataSourceProperties.dataSource.dataSourceClassName "oracle.jdbc.pool.OracleDataSource" }}
               schema = xe
           {{- end}}
-          }' >> ${BASE_DIR}/node.conf
+          }' > ${BASE_DIR}/node.conf
 
           export SSLTRUSTSTORE_PASSWORD=$(cat ${BASE_DIR}/certificates/sslpass)
           export TRUSTSTORE_PASSWORD=$(cat ${BASE_DIR}/certificates/credentials/truststorepass)
