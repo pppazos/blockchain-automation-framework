@@ -185,6 +185,7 @@ spec:
           command: ["/bin/bash", "-c"]
           args:
           - |-
+            set -x
             rm -f certificates/done.txt
             echo 'myLegalName: "{{ .Values.nodeConf.legalName }}"
             emailAddress: "{{ .Values.nodeConf.emailAddress }}"
