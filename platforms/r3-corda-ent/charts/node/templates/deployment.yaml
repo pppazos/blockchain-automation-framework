@@ -166,15 +166,15 @@ spec:
               echo "Done"
 
               mkdir -p ${OUTPUT_PATH}/tlscerts
-              LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/certs/{{ .Values.networkServices.idmanName }} | jq -r 'if .errors then . else . end')
-              validateVaultResponse "${CERTS_SECRET_PREFIX}/certs/{{ .Values.networkServices.idmanName }}" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
-              IDMAN_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["{{ .Values.networkServices.idmanName }}.crt"]')
-              echo "${IDMAN_CERT}" | base64 -d > ${OUTPUT_PATH}/tlscerts/idman.crt
+              # LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/certs/{{ .Values.networkServices.idmanName }} | jq -r 'if .errors then . else . end')
+              # validateVaultResponse "${CERTS_SECRET_PREFIX}/certs/{{ .Values.networkServices.idmanName }}" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
+              # IDMAN_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["{{ .Values.networkServices.idmanName }}.crt"]')
+              # echo "${IDMAN_CERT}" | base64 -d > ${OUTPUT_PATH}/tlscerts/idman.crt
 
-              LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/certs/{{ .Values.networkServices.networkmapName }} | jq -r 'if .errors then . else . end')
-              validateVaultResponse "${CERTS_SECRET_PREFIX}/certs/{{ .Values.networkServices.networkmapName }}" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
-              NETWORKMAP_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["{{ .Values.networkServices.networkmapName }}.crt"]')
-              echo "${NETWORKMAP_CERT}" | base64 -d > ${OUTPUT_PATH}/tlscerts/networkmap.crt
+              # LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/certs/{{ .Values.networkServices.networkmapName }} | jq -r 'if .errors then . else . end')
+              # validateVaultResponse "${CERTS_SECRET_PREFIX}/certs/{{ .Values.networkServices.networkmapName }}" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
+              # NETWORKMAP_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["{{ .Values.networkServices.networkmapName }}.crt"]')
+              # echo "${NETWORKMAP_CERT}" | base64 -d > ${OUTPUT_PATH}/tlscerts/networkmap.crt
 
               # get ca ssl-truststore.jks from vault
               LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/root/certs | jq -r 'if .errors then . else . end')
