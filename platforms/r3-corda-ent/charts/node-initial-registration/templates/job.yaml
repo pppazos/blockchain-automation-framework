@@ -130,6 +130,7 @@ spec:
                 KEYSTORE_PASSWORD=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["root"]')
                 echo "${KEYSTORE_PASSWORD}" > ${MOUNT_PATH}/credentials/rootpass             
                 
+                sleep 1200
                 echo "Done"
           volumeMounts:
           - name: certificates
