@@ -66,6 +66,7 @@
   register: corda_ssl_ca_check
 
 # download from vault tls ca and convert from jks to p12
+#TODO is correct the aproac to use master ssl ca from vault from network? is node alone
 - name: Get Corda SSL root ca
   shell: |
     echo $TRUSTSTORE_PASS
