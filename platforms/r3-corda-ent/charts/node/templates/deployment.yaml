@@ -395,7 +395,8 @@ spec:
                    -Djavax.net.ssl.keyStore=${BASE_DIR}/certificates/sslkeystore.jks \
                    -Djavax.net.ssl.keyStorePassword=${KEYSTORE_PASSWORD} \
                    -jar {{ .Values.nodeConf.jarPath }}/corda.jar \
-                   -f ${BASE_DIR}/node.conf --base-directory ${BASE_DIR}
+                   -f ${BASE_DIR}/node.conf --base-directory ${BASE_DIR} \
+                   --logging-level DEBUG
               EXIT_CODE=${?}
           else
               echo "Missing node jar file in {{ .Values.nodeConf.jarPath }} folder:"
