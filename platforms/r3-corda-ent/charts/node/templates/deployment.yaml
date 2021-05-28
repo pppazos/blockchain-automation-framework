@@ -372,13 +372,13 @@ spec:
           #yes | keytool -importcert -file ${BASE_DIR}/certificates/tlscerts/idman.crt -storepass changeit -alias {{ .Values.networkServices.idmanDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
           #yes | keytool -importcert -file ${BASE_DIR}/certificates/tlscerts/node.crt -storepass changeit -alias {{ .Values.nodeName }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
           
-          keytool -importkeystore -srckeystore ${BASE_DIR}/certificates/corda-ssl-trust-store.jks -srcstorepass $SSLTRUSTSTORE_PASSWORD -destkeystore ${BASE_DIR}/certificates/truststore.jks -deststorepass $TRUSTSTORE_PASSWORD -srcalias cordasslrootca -destalias cordasslrootca
+          #keytool -importkeystore -srckeystore ${BASE_DIR}/certificates/corda-ssl-trust-store.jks -srcstorepass $SSLTRUSTSTORE_PASSWORD -destkeystore ${BASE_DIR}/certificates/truststore.jks -deststorepass $TRUSTSTORE_PASSWORD -srcalias cordasslrootca -destalias cordasslrootca
           SSL_TRUSTSTORE_PASSWORD=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13)
           echo ${SSL_TRUSTSTORE_PASSWORD} >${BASE_DIR}/certificates/credentials/ssltruststorepass
           CORDA_SSL_TRUSTSTORE=${BASE_DIR}/certificates/corda-ssl-custom-trust-store.jks
-          #yes | keytool -importcert -file ${BASE_DIR}/certificates/tlscerts/networkmap.crt -storepass $SSL_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.networkMapDomain }} -keystore $CORDA_SSL_TRUSTSTORE
-          #yes | keytool -importcert -file ${BASE_DIR}/certificates/tlscerts/idman.crt -storepass $SSL_TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.idmanDomain }} -keystore $CORDA_SSL_TRUSTSTORE
-          #yes | keytool -importcert -file ${BASE_DIR}/certificates/tlscerts/node.crt -storepass $SSL_TRUSTSTORE_PASSWORD -alias {{ .Values.nodeName }} -keystore $CORDA_SSL_TRUSTSTORE
+          yes | keytool -importcert -file ${BASE_DIR}/certificates/tlscerts/networkmap.crt -storepass $TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.networkMapDomain }} -keystore ${BASE_DIR}/certificates/truststore.jks
+          yes | keytool -importcert -file ${BASE_DIR}/certificates/tlscerts/idman.crt -storepass $TRUSTSTORE_PASSWORD -alias {{ .Values.networkServices.idmanDomain }} -keystore ${BASE_DIR}/certificates/truststore.jks
+          yes | keytool -importcert -file ${BASE_DIR}/certificates/tlscerts/node.crt -storepass $TRUSTSTORE_PASSWORD -alias {{ .Values.nodeName }} -keystore ${BASE_DIR}/certificates/truststore.jks
            
 
           /bin/sh
