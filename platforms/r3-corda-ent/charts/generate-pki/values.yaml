@@ -85,6 +85,9 @@ cenmServices:
   # Provide the name of the networkmap
   # Eg. networkmapName: networkmap
   networkmapName:
+  # Mention the networkmap public IP
+  # Eg. publicIp: networkmap.baf.com  
+  publicIp:  
   # Provide the name of the notary
   # Eg. notaryName: notary
   notaryName:
@@ -98,6 +101,8 @@ identityManager:
   publicPort: 
 
 subjects:
+  # Mention the subject for tls root ca
+  tlsrootca:
   # Mention the subject for tls crl signer
   # Eg. tlscrlsigner: "CN=Test TLS Signer Certificate, OU=HQ, O=HoldCo LLC, L=New York, C=US"
   tlscrlsigner:

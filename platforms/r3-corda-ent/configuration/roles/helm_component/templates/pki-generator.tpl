@@ -34,11 +34,13 @@ spec:
     cenmServices:
       signerName: {{ services.signer.name }}
       idmanName: {{ services.idman.name }}
+      publicIp: {{ services.networkmap.name }}.{{ org.external_url_suffix }}
       networkmapName: {{ services.networkmap.name }}
     identityManager:
       publicIp: {{ org.services.idman.name }}.{{ org.external_url_suffix }}
       publicPort: 443
     subjects:
+      tlsrootca: "{{ org.external_url_suffix }}"
       tlscrlsigner: "{{ services.signer.subject }}"
       tlscrlissuer: "{{ services.idman.crlissuer_subject }}"
       rootca: "{{ org.subject }}"
