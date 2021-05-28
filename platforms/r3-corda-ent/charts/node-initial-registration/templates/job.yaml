@@ -288,7 +288,9 @@ spec:
 
             # Check for Idman and networkmap service links are up
             server=$(echo {{ .Values.networkServices.doormanURL }} | sed 's/.*\/\/\(.*\):\(.*\)/\1/' )
-            port=$(echo {{ .Values.networkServices.doormanURL }} | sed 's/.*\/\/\(.*\):\(.*\)/\2/' )
+            port=$(echo {{ .Values.networkServices.doormanURL }} |   sed 's/.*\/\/\(.*\):\(.*\)/\2/' )
+            #handle when no port is provided
+            [[ ${server} = ${port} ]] && port=443
             printf "IdMan server:%s" "${server}"
             printf "  IdMan port:%s" "${port}"
             timeout 10m bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' ${server} ${port}
