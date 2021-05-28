@@ -45,6 +45,7 @@ spec:
           args:
           - |-
                 #!/usr/bin/env sh
+                set -x
                 validateVaultResponse () {
                   if echo ${2} | grep "errors"; then
                     echo "ERROR: unable to retrieve ${1}: ${2}"
@@ -104,14 +105,14 @@ spec:
                 fi
                 
                 mkdir -p ${MOUNT_PATH}/tlscerts
-                # LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.idmanName }}/tlscerts | jq -r 'if .errors then . else . end')
-                # validateVaultResponse "${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.idmanName }}/tlscerts" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
-                # IDMAN_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["tlscacerts"]')
-                # echo "${IDMAN_CERT}" | base64 -d > ${MOUNT_PATH}/tlscerts/idman.crt
-                # LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.networkmapName }}/tlscerts | jq -r 'if .errors then . else . end')
-                # validateVaultResponse "${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.networkmapName }}/tlscerts" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
-                # NETWORKMAP_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["tlscacerts"]')
-                # echo "${NETWORKMAP_CERT}" | base64 -d > ${MOUNT_PATH}/tlscerts/networkmap.crt
+                LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.idmanName }}/tlscerts | jq -r 'if .errors then . else . end')
+                validateVaultResponse "${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.idmanName }}/tlscerts" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
+                IDMAN_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["tlscacerts"]')
+                echo "${IDMAN_CERT}" | base64 -d > ${MOUNT_PATH}/tlscerts/idman.crt
+                LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.networkmapName }}/tlscerts | jq -r 'if .errors then . else . end')
+                validateVaultResponse "${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.networkmapName }}/tlscerts" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
+                NETWORKMAP_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["tlscacerts"]')
+                echo "${NETWORKMAP_CERT}" | base64 -d > ${MOUNT_PATH}/tlscerts/networkmap.crt
                 #Fetching truststore credentials from vault
                 mkdir -p ${MOUNT_PATH}/truststore
                 OUTPUT_PATH=${MOUNT_PATH}/truststore;
@@ -184,6 +185,7 @@ spec:
           command: ["/bin/bash", "-c"]
           args:
           - |-
+            set -x
             rm -f certificates/done.txt
             echo 'networkServices {
                 doormanURL="{{ .Values.networkServices.doormanURL }}"
@@ -223,7 +225,7 @@ spec:
                         ALL
                     ]
                 }
-            ]' >> etc/notary.conf
+            ]' > etc/notary.conf
             export TRUSTSTORE_PASSWORD=$(cat {{ $.Values.nodeConf.volume.baseDir }}/DATA/truststore/ts)
             sed -i -e "s*TRUSTSTORE_PASSWORD*${TRUSTSTORE_PASSWORD}*g" etc/notary.conf
             export KEYSTORE_PASSWORD=$(cat {{ $.Values.nodeConf.volume.baseDir }}/DATA/keystore/ks)
@@ -233,6 +235,7 @@ spec:
             #yes | keytool -importcert -file {{ $.Values.nodeConf.volume.baseDir }}/DATA/tlscerts/idman.crt -storepass changeit -alias {{ .Values.networkServices.idmanDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
 
             /bin/sh
+            set -x
             CORDA_SSL_TRUSTSTORE={{ $.Values.nodeConf.volume.baseDir }}/DATA/trust-stores/corda-ssl-trust-store.jks
             NETWORK_ROOT_TRUSTSTORE={{ $.Values.nodeConf.volume.baseDir }}/DATA/trust-stores/network-root-truststore.jks
             NETWORK_ROOT_TRUSTSTORE_PASSWORD=$(cat {{ $.Values.nodeConf.volume.baseDir }}/DATA/truststore/rootcats)
@@ -282,6 +285,7 @@ spec:
             fi
 
             sleep ${HOW_LONG}
+            sleep 1200
             touch ${BASE_DIR}/certificates/done.txt
           volumeMounts:
           - name: notary-etc
@@ -317,6 +321,7 @@ spec:
           args:
           - |-
             #!/usr/bin/env sh
+            set -x
             validateVaultResponse () {
               if echo ${2} | grep "errors"; then
                  echo "ERROR: unable to retrieve ${1}: ${2}"
