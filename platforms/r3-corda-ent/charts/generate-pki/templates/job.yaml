@@ -211,10 +211,12 @@ spec:
           command: ["/bin/bash", "-c"]
           args:
           - |-
+            set -x
             if [ -e /certcheck/present.txt ]
             then
               echo "Certificates already present in the vault. Skipping.."
-              exit 0
+              echo "TMP!!!!!!!!!!!!!!!!"
+              #exit 0
             fi
             rm -r ${BASE_DIR}/DATA/done.txt
 
@@ -447,6 +449,7 @@ spec:
 
             #creating a dummy file to perform check if last line is executed or not.
             touch ${BASE_DIR}/DATA/done.txt
+            #sleep 120
           volumeMounts:
           - name: certcheck
             mountPath: /certcheck
@@ -478,7 +481,8 @@ spec:
           command: ["sh", "-c"]
           args:
           - |-
-            #!/usr/bin/env sh
+            #!/usr/bin/env sh -x
+            set -x
             validateVaultResponse () {
               if echo ${2} | grep "errors"; then
                  echo "ERROR: unable to retrieve ${1}: ${2}"
@@ -504,6 +508,8 @@ spec:
                 if [ -e done.txt ]
                 then
                   cd ${BASE_DIR}/DATA/root
+                  pwd
+                  ls -lisaR
                   echo "found root certificates, performing vault put for root path"
                   (echo '{'
                   for FILE in *;
@@ -536,6 +542,8 @@ spec:
                 if [ -e done.txt ]
                 then
                   cd ${BASE_DIR}/DATA/signer
+                  pwd
+                  ls -lisaR
                   echo "found signer certificates, performing vault put for signer path"
                   (echo '{'
                   for FILE in *;

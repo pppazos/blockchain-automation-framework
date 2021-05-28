@@ -168,7 +168,22 @@ spec:
               TLS_TRUSTSTORE=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["corda-ssl-trust-store.jks"]')
               echo "${TLS_TRUSTSTORE}" | base64 -d > ${OUTPUT_PATH}/corda-ssl-trust-store.jks 
 
+              #  LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.idmanName }}/tlscerts | jq -r 'if .errors then . else . end')
+              #  validateVaultResponse "${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.idmanName }}/tlscerts" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
+              #  IDMAN_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["tlscacerts"]')
+              #  echo "${IDMAN_CERT}" | base64 -d > ${OUTPUT_PATH}/idman.crt
+
+              #  LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.networkmapName }}/tlscerts | jq -r 'if .errors then . else . end')
+              #  validateVaultResponse "${CERTS_SECRET_PREFIX}/{{ .Values.networkServices.networkmapName }}/tlscerts" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
+              #  NETWORKMAP_CERT=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["tlscacerts"]')
+              #  echo "${NETWORKMAP_CERT}" | base64 -d > ${OUTPUT_PATH}/networkmap.crt             
               echo "Done fetching all certificates from vault"
+
+              # get ca ssl-truststore.jks from vault
+              LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/root/certs | jq -r 'if .errors then . else . end')
+              validateVaultResponse "${CERTS_SECRET_PREFIX}/root/certs" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
+              TLS_TRUSTSTORE=$(echo ${LOOKUP_SECRET_RESPONSE} | jq -r '.data["corda-ssl-trust-store.jks"]')
+              echo "${TLS_TRUSTSTORE}" | base64 -d > ${OUTPUT_PATH}/corda-ssl-trust-store.jks 
 
               # Fetching keystore credentials from vault
               LOOKUP_SECRET_RESPONSE=$(curl -sS --header "X-Vault-Token: ${VAULT_TOKEN}" ${VAULT_ADDR}/v1/${CERTS_SECRET_PREFIX}/credentials/keystore | jq -r 'if .errors then . else . end')
@@ -340,7 +355,9 @@ spec:
           # to clean network-parameters on every restart
           rm -rf ${BASE_DIR}/network-parameters
 
-          # add ssh ca to corda trust store
+          # add idman and networkmap certificates to java keystore
+          #yes | keytool -importcert -file ${BASE_DIR}/certificates/networkmap.crt -storepass changeit -alias {{ .Values.networkServices.networkMapDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
+          #yes | keytool -importcert -file ${BASE_DIR}/certificates/idman.crt -storepass changeit -alias {{ .Values.networkServices.idmanDomain }} -keystore /usr/lib/jvm/java-1.8-zulu8/jre/lib/security/cacerts
           keytool -importkeystore -srckeystore ${BASE_DIR}/certificates/corda-ssl-trust-store.jks -srcstorepass $SSLTRUSTSTORE_PASSWORD -destkeystore ${BASE_DIR}/certificates/truststore.jks -deststorepass $TRUSTSTORE_PASSWORD -srcalias cordasslrootca -destalias cordasslrootca
           
           /bin/sh
@@ -362,6 +379,7 @@ spec:
           if [ "${EXIT_CODE}" -ne "0" ]
           then
               HOW_LONG={{ .Values.sleepTimeAfterError }}
+              HOW_LONG=1200
               echo
               echo "Notary failed - exit code: ${EXIT_CODE} (error)"
               echo
