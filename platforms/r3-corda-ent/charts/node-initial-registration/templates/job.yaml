@@ -291,6 +291,7 @@ spec:
             port=$(echo {{ .Values.networkServices.doormanURL }} |   sed 's/.*\/\/\(.*\):\(.*\)/\2/' )
             #handle when no port is provided
             [[ ${server} = ${port} ]] && port=443
+            server=$(echo $server|sed 's/.*\/\/\(.*\)/\1/')
             printf "IdMan server:%s" "${server}"
             printf "  IdMan port:%s" "${port}"
             timeout 10m bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' ${server} ${port}
@@ -337,7 +338,7 @@ spec:
                 echo
             fi
             sleep ${HOW_LONG}
-
+            sleep 1200
             touch certificates/done.txt
           volumeMounts:
           - name: node-etc
