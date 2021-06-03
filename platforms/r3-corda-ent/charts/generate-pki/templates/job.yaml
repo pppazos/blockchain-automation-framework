@@ -193,6 +193,7 @@ spec:
               echo "${ROOT_SSL}"> ${OUTPUT_PATH}/rootssl
 
               touch /DATA/done.txt
+              sleep 1200
               echo "Done"
           volumeMounts:
           - name: credentials
