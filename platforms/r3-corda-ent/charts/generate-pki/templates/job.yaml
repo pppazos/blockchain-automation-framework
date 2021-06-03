@@ -193,7 +193,6 @@ spec:
               echo "${ROOT_SSL}"> ${OUTPUT_PATH}/rootssl
 
               touch /DATA/done.txt
-              sleep 1200
               echo "Done"
           volumeMounts:
           - name: credentials
@@ -447,7 +446,6 @@ spec:
             time java -Xmx{{ .Values.cordaJarMx }}M -jar bin/pkitool.jar --config-file {{ .Values.configPath }}/pki.conf
 
             #creating a dummy file to perform check if last line is executed or not.
-            sleep 1200
             touch ${BASE_DIR}/DATA/done.txt
           volumeMounts:
           - name: certcheck
@@ -606,7 +604,6 @@ spec:
                 exit 1
                 break
             fi
-            sleep 1200
             echo "completed"
           volumeMounts:
           - name: certcheck
