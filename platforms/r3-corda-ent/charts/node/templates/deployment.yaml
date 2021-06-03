@@ -47,6 +47,7 @@ spec:
         args:
         - |-
             #!/usr/bin/env sh
+            set -x
               validateVaultResponse () {
                 if echo ${2} | grep "errors"; then
                   echo "ERROR: unable to retrieve ${1}: ${2}"
@@ -72,7 +73,7 @@ spec:
             echo "Getting secrets from Vault Server"
             KUBE_SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
             VAULT_TOKEN=$(curl -sS --request POST ${VAULT_ADDR}/v1/auth/${KUBERNETES_AUTH_PATH}/login -H "Content-Type: application/json" -d '{"role":"'"${VAULT_APP_ROLE}"'","jwt":"'"${KUBE_SA_TOKEN}"'"}' | jq -r 'if .errors then . else .auth.client_token end')
-            
+
             validateVaultResponse 'vault login token' "${VAULT_TOKEN}"
             echo "logged into vault"
             COUNTER=1
@@ -86,7 +87,7 @@ spec:
                 else
                   validateVaultResponse "${CERTS_SECRET_PREFIX}/certs/truststore" "${LOOKUP_SECRET_RESPONSE}" "LOOKUPSECRETRESPONSE"
                   break
-                fi 
+                fi
                 COUNTER=`expr "$COUNTER" + 1`
             done
 
