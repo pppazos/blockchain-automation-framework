@@ -369,7 +369,7 @@ spec:
                     issuesCertificates = false
                     subject = {{ .Values.subjects.networkmap | quote }}
                 },      
-                "sslrootca" = {
+                "cordasslrootca" = {
                     key = {
                         type = LOCAL
                         includeIn = ["corda-ssl-root-keys"]
