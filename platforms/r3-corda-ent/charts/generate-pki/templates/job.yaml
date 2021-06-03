@@ -369,20 +369,13 @@ spec:
                     issuesCertificates = false
                     subject = {{ .Values.subjects.networkmap | quote }}
                 },      
-                "cordasslrootca" = {
+                "::CORDA_SSL_ROOT" {
                     key = {
                         type = LOCAL
                         includeIn = ["corda-ssl-root-keys"]
                         algorithm = "ECDSA_SECP256R1_SHA256"
                         password = "ROOT_SSL"
                     }
-                    isSelfSigned = true
-                    keyUsages = [DIGITAL_SIGNATURE, KEY_CERT_SIGN, CRL_SIGN]
-                    keyPurposes = [SERVER_AUTH, CLIENT_AUTH]
-                    validDays = 7300
-                    issuesCertificates = true
-                    subject = {{ .Values.subjects.rootca | quote }}
-                    includeIn = ["corda-ssl-trust-store"]
                     crl = {
                         crlDistributionUrl = "https://{{ .Values.identityManager.publicIp }}:{{ .Values.identityManager.publicPort }}/certificate-revocation-list/ssl"
                         file = "./DATA/root/crls/ssl.crl"
