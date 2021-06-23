@@ -1,0 +1,43 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: university-university-endorser-transaction
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: university-ns
+spec:
+  releaseName: university-university-endorser-transaction
+  chart:
+    path: platforms/hyperledger-indy/charts/indy-ledger-txn
+    git: ssh://git@github.com/pppazos/blockchain-automation-framework.git
+    ref: dev3
+  values:
+    metadata:
+      name: university-university-endorser-transaction
+      namespace: university-ns
+    network:
+      name: baf
+    image:
+      cli:
+        name: university
+        repository: adopblockchaincloud0502.azurecr.io/indy-ledger-txn:latest
+        pullSecret: regcred
+    vault:
+      address: http://vault.internal.dev3.aws.blockchaincloudpoc-develop.com:30001
+      role: rw
+      serviceAccountName: university-admin-vault-auth
+      auth_path: kubernetes-university-admin-auth
+    organization:
+      name: university
+      adminIdentity:
+        name: authority-trustee
+        did: BusNnKs8Jmn4QQ146Fe8dJ
+        path: authority/trustees
+      newIdentity:
+        name: university-endorser
+        role: ENDORSER
+        did: PM4SJbJw95DPM4ym9PNKZ1
+        verkey: DBPzHxAaUj5b4pGAdeLm8TXUcvGyzA2Em7vCjwrzyuh2
+        path: university/endorsers
+    node:
+      name: university
