@@ -67,7 +67,6 @@ spec:
             keytool -keypasswd -alias cordaclienttls -keypass ${DEFAULT_KEYSTORE_PASSWORD} -new ${KEYSTORE_PASSWORD} -keystore ${BASE_DIR}/certificates/sslkeystore.jks -storepass ${KEYSTORE_PASSWORD}
 
             # create dummy file to perform check if last line of the container is executed or not
-            sleep 1200
             touch ${BASE_DIR}/certificates/done.txt
           volumeMounts:
           - name: node-volume
