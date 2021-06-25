@@ -320,7 +320,7 @@ spec:
           command: ["sh", "-c"]
           args:
           - |-
-            #!/usr/bin/env sh
+            #!/usr/bin/env sh -x
             validateVaultResponse () {
               if echo ${2} | grep "errors"; then
                 echo "ERROR: unable to retrieve ${1}: ${2}"
