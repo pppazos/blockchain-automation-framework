@@ -595,7 +595,7 @@ spec:
               
               # Downloading official corda provided jars using curl 
               {{- range .Values.cordapps.jars }}
-                cd /tmp/downloaded-jars && curl -u  $REPO_USER:$REPO_USER_PASS -O -J {{ .url }}
+                cd /tmp/downloaded-jars && curl -u  $REPO_USER:$REPO_USER_PASS --output {{ .name }} {{ .url }} 
               {{- end }}
               cp -ar /tmp/downloaded-jars/* {{ $.Values.volume.baseDir }}/cordapps
             {{- end }}  
