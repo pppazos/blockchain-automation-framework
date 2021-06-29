@@ -1,0 +1,25 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: university-ptg
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: university-ns
+spec:
+  releaseName: university-ptg
+  chart:
+    path: platforms/hyperledger-indy/charts/indy-pool-genesis
+    git: ssh://git@github.com/pppazos/blockchain-automation-framework.git
+    ref: dev3
+  values:
+    metadata:
+      name: university-ptg
+      namespace: university-ns
+    organization:
+      name: university
+    configmap:
+      poolGenesis: |-
+        {"reqSignature":{},"txn":{"data":{"data":{"alias":"university-steward-1","blskey":"3xd5kMnGrA9sAgaDSwESgkTN7ryhK5M2Y8MPcLCBWcJhr1KpTybb3pUZpP6g1UnMdDns67QttMtHSkBeLY8XFPjEuvkyh86HXqjy6n9cTSydRd6NbgLqWSHdkGh8KTXi2WgqD3XdrREi1uBja1H9Vy2XXEad9epmXTiqErCAJG2FJSS","blskey_pop":"RGfGcgdbEpFYN2rLnwfhggAAD7v47sy1upSGL2WQF5E8QznRc3kmxaeZAQ5YPHB1uzUai5PLn7LhyzquZpNRyvdPyWWoPbt9MFoJkBUHq94ijR4YDAEirgtRaz698iLDry4BqtxcBpdiLaj8mdLMJ7Yb6AysK6BKdaErU72LcdR5rw","client_ip":"52.51.240.218","client_port":15012,"node_ip":"52.51.240.218","node_port":15011,"services":["VALIDATOR"]},"dest":"DT6GU3HQ45BV8J5tgr91GcZsMBVnsSfzz4XoNxjs6pDb"},"metadata":{"from":"PqrZybGVZaXt19PsEtxDiV"},"type":"0"},"txnMetadata":{"seqNo":1,"txnId":"16bcef3d14020eac552e3f893b83f00847420a02cbfdc80517425023b75f124e"},"ver":"1"}
+        {"reqSignature":{},"txn":{"data":{"data":{"alias":"university-steward-2","blskey":"24K91wTXaV56KevkHN4zR233RP2yiNRFswuyZNUQgoJBAncPCn5E8GFRDUHf95bZ4B59EsNNQkgK6sV1Pzhix6G3A41yvsdQ5CHg5ciRjMpYuFkLtx6XhBUoWJh7HuNGZ3aF2cnCB8f7KvyzUjRpQjzhrBzK33xWbotf7teH6KxBYkJ","blskey_pop":"RRh5dDm8huS4YY5h7revJwR9YASkaUHxo44MnjGo5Rid8vjYuEKJ3PGSM3M2aKryCHiMYxYTZddeiUaCbmfQHkoSNqutWtzDkaRQc5uoxV5t8Qvme5wFQWWyuqzikC3q9175eXKTxoC8nZG8qqVZjjA9WfFQTWfbwDbRsD4SyVQhKu","client_ip":"52.51.240.218","client_port":15022,"node_ip":"52.51.240.218","node_port":15021,"services":["VALIDATOR"]},"dest":"9dG7ZFAG5wmUmYky9Cd4LktwkbuCqq3WaAZMgbUPBgsJ"},"metadata":{"from":"GprRKyoxwZyD9xhi3WXgEK"},"type":"0"},"txnMetadata":{"seqNo":2,"txnId":"ab3146fcbe19c6525fc9c325771d6d6474f8ddec0f2da425774a1687a4afe949"},"ver":"1"}
+        {"reqSignature":{},"txn":{"data":{"data":{"alias":"employer-steward-1","blskey":"33rA2RF9njdAYCMYzVQeZbWPBNu5JzWqwKf8Gicf5xG7JaYB1ScFG4QWP3k9nv3s9xPHrDMHitUwnFarFptjNjHryQxiNgK9N1VUAdsPuJTrb2Urndx3jPPESdiP2iH2onxkQXmb8MvxtUSX4S1hZo3PPohmmF7KWeWuznHovgGYru3","blskey_pop":"RE1JsAhkmAhFRtDWdDtD7zgRMradJK3iyH9tkoXXiE59Gzx1TDysmo2fEXoy8xW74b8X4Zekj1anpkDvr6agX9BAeVd1JZDL1184SYQ3tnMW295FZKt5c7cgkc5dqVAvvCNb97yZRsBzjU7huzfzUvdBpWy7ZxfLi31baiAtQembQs","client_ip":"52.51.240.218","client_port":15032,"node_ip":"52.51.240.218","node_port":15031,"services":["VALIDATOR"]},"dest":"24ebDzc1vA1eMPz7QCd59Mm7J7XGwDB8zsxAhTTGVT5t"},"metadata":{"from":"2x7JnMDS5sQoGnM8ywgFgN"},"type":"0"},"txnMetadata":{"seqNo":3,"txnId":"d85334ed1fb537b2ff8627b8cc4bcf2596d5da62c6d85244b80675ebae91fd07"},"ver":"1"}
+        {"reqSignature":{},"txn":{"data":{"data":{"alias":"employer-steward-2","blskey":"4k6NLBcX8E1ARpB4uJtoNPnNrQMHysFMUgAGxJmgTPGq2jbbnnEMSTffx6Bivc6rFe4PPrsQPAmygPnrT2711ZFc3a7HX6qqobPffCbc6hDgX5BAGtMQWaJC4k3rXJGdB8xUMXyhVdtBpD2bgXXz1WzbmNc6prexrCXaiSeuagLfw9M","blskey_pop":"RShEDVVMSH1gdd4ocjX6GjxpobfBH3R1392AwsQNJAYHXKXaVgC4YH3CK5UySuCjQvZDgk5ayy2RCC19VNKyvTb3TtEExdQd3TfcVrKWB5SA7PQPUYjDHYaX4CFgHYiTsLmmSY4g3KvLc5V2tjjeKf3DhckiFmcx2Ud6tFChTJjkCP","client_ip":"52.51.240.218","client_port":15042,"node_ip":"52.51.240.218","node_port":15041,"services":["VALIDATOR"]},"dest":"CQL4DNVAeKdeNo7i6zxA6M5JCRwzPfGG5D9wBNxPfKKb"},"metadata":{"from":"MvNXh1Hz6hwR1M2HRZzZ8P"},"type":"0"},"txnMetadata":{"seqNo":4,"txnId":"1b0dca5cd6ffe526ab65f1704b34ec24096b75f79d4c0468a625229ed686f42a"},"ver":"1"}
