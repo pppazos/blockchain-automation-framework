@@ -1,0 +1,36 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: university-university-steward-2-auth-job
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: university-ns
+spec:
+  releaseName: university-university-steward-2-auth-job
+  chart:
+    path: platforms/hyperledger-indy/charts/indy-auth-job
+    git: ssh://git@github.com/pppazos/blockchain-automation-framework.git
+    ref: dev3
+  values:
+    metadata:
+      name: university-university-steward-2-auth-job
+      namespace: university-ns
+    network:
+      name: baf
+      kubernetes_url: https://834FD22861D744684E4C2D668B2D5739.gr7.eu-central-1.eks.amazonaws.com
+    image:
+      name: university
+      repository: alpine:3.9.4
+    vault:
+      address: http://vault.internal.dev3.aws.blockchaincloudpoc-develop.com:30001
+      keyPath: university.stewards
+      identity: university-steward-2
+      admin_auth_path: kubernetes-university-admin-auth
+      policy: university-university-steward-2-ro
+      policy_content: path \"/university/stewards/university-steward-2/*\" { capabilities = [ \"read\", \"list\" ] }
+      auth_path: kubernetes-university-university-steward-2-auth
+    account:
+      admin_service: university-admin-vault-auth
+      admin_role: rw
+      service: university-university-steward-2-vault-auth
+      role: ro
