@@ -1,15 +1,15 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: authority-authority-trustee-vault-auth-role-binding
-  namespace: authority-ns
+  name: university-university-endorser-vault-auth-role-binding
+  namespace: university-ns
   labels:
-    organization: authority
+    organization: university
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: system:auth-delegator
 subjects:
 - kind: ServiceAccount
-  name: authority-authority-trustee-vault-auth
-  namespace: authority-ns
+  name: university-university-endorser-vault-auth
+  namespace: university-ns
