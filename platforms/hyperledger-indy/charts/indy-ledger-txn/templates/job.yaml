@@ -89,6 +89,7 @@ spec:
           echo "Running ledger Transaction Script...";
 
           ./home/indy-ledger.sh $ADMIN_DID $ADMIN_SEED $IDENTITY_DID $IDENTITY_ROLE $IDENTITY_VERKEY $POOL_GENESIS_PATH;
+          sleep 1200
         env:
           - name: VAULT_APP_ROLE
             value: {{ $.Values.vault.role }}

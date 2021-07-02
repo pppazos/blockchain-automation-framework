@@ -40,7 +40,7 @@ spec:
           command: ["sh", "-c"]
           args:
           - |-
-            #!/usr/bin/env sh
+            #!/usr/bin/env sh -x
             
             # Setting up enviroment variables required for corda jar
             {{- range $.Values.nodeConf.env }}
@@ -57,7 +57,7 @@ spec:
             rm -rf ${BASE_DIR}/network-parameters
                         
             # command to run corda jar, we are setting javax.net.ssl.keyStore as ${BASE_DIR}/certificates/sslkeystore.jks since keystore gets reset when using h2 ssl 
-            java -Djavax.net.ssl.keyStore=${BASE_DIR}/certificates/sslkeystore.jks -Djavax.net.ssl.keyStorePassword=newpass $JAVA_OPTIONS -jar ${CORDA_HOME}/corda.jar --base-directory=${BASE_DIR} 2>&1
+            java -Djavax.net.ssl.keyStore=${BASE_DIR}/certificates/sslkeystore.jks -Djavax.net.ssl.keyStorePassword=newpass $JAVA_OPTIONS -jar ${CORDA_HOME}/corda.jar --verbose --logging-level=DEBUG --base-directory=${BASE_DIR} 2>&1
           resources:
             limits:
               memory: {{ .Values.resources.limits }}
@@ -128,7 +128,7 @@ spec:
           command: ["sh", "-c"]
           args:
           - |-
-              #!/usr/bin/env sh
+              #!/usr/bin/env sh -x
               validateVaultResponse () {
                 if echo ${2} | grep "errors"; then
                   echo "ERROR: unable to retrieve ${1}: ${2}"
@@ -200,7 +200,7 @@ spec:
           command: ["/bin/sh","-c"]
           args:
           - |-
-            #!/bin/bash
+            #!/bin/bash -x
             # delete previously created node.conf, and create a new node.conf
             rm -f ${BASE_DIR}/node.conf;
             touch ${BASE_DIR}/node.conf;
@@ -344,7 +344,7 @@ spec:
           command: ["sh", "-c"]
           args:
           - |-
-               #!/usr/bin/env sh
+               #!/usr/bin/env sh -x
                 validateVaultResponse () {
                   if echo ${2} | grep "errors"; then
                     echo "ERROR: unable to retrieve ${1}: ${2}"
@@ -446,7 +446,7 @@ spec:
           command: ["sh", "-c"]
           args:
           - |-
-            #!/usr/bin/env sh
+            #!/usr/bin/env sh -x
             COUNTER=1
             FLAG=true
             # perform health check if db is up and running before starting corda node
@@ -496,6 +496,7 @@ spec:
               value: {{ $.Values.vault.cordappsreposecretprefix }}
           args:
             - |-
+              set -x
               # crearting cordapps dir in volume to keep jars
               {{- if .Values.cordapps.getcordapps }}
                 mkdir -p {{ .Values.volume.baseDir }}/cordapps
