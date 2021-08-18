@@ -36,7 +36,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     -
       name: Build and push release tag latest
-      id: docker_build_release
+      id: docker_build_latest
       uses: docker/build-push-action@v2
       with:
         file: ./Dockerfile
@@ -44,7 +44,7 @@ jobs:
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/baf-build:latest  
     -
       name: Build and push tag jdk8-latest
-      id: docker_build_jdk8
+      id: docker_build_jdk8_latest
       uses: docker/build-push-action@v2
       with:
         file: ./Dockerfile.jdk8
@@ -83,7 +83,7 @@ jobs:
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/baf-build:${{ steps.vars.outputs.tag }}    
     -
       name: Build and push release tag stable  based on v${{ steps.vars.outputs.tag }}
-      id: docker_build_release
+      id: docker_build_stable
       uses: docker/build-push-action@v2
       with:
         file: ./Dockerfile
