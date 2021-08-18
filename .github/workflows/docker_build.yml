@@ -3,7 +3,7 @@
 #  - push on develop branch for latest tags 
 #  - create tag vx.y.z for release tags
 
-#TODO change docker_build to develop  test
+#TODO change docker_build to develop
 
 name: Docker image baf-build tagging
 
