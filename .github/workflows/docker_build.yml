@@ -1,13 +1,53 @@
-# This is custom git Action created to run molecule test cases during any push on develop branch
-# The workflow is divided into test stages, based on the PR title particular test stages will run
+# Build baf-build docker image 
+# triggered on merge on :
+#  - push on develop branch for latest tags 
+#  - create tag vx.y.z for release tags
 
-name: Docker build baf-build
+name: Docker image baf-build
 
 on:
   create:
+  push:
+      branches:
+        - develop
 
 jobs:
-  docker:
+  latest:
+    if: ${{ startsWith(github.ref, 'refs/heads/develop') }}
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    -
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    -
+      name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    -
+      name: Build and push release tag latest
+      id: docker_build_release
+      uses: docker/build-push-action@v2
+      with:
+        file: ./Dockerfile
+        push: true
+        tags: pppazos/baf-build:tci.latest  
+    -
+      name: Build and push tag jdk8-latest
+      id: docker_build_jdk8
+      uses: docker/build-push-action@v2
+      with:
+        file: ./Dockerfile.jdk8
+        push: true
+        tags: pppazos/baf-build:tci.jdk8-latest    
+  release:
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     steps:
@@ -16,7 +56,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Set output
       id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/v}
     -
       name: Set up QEMU
       uses: docker/setup-qemu-action@v1
@@ -36,26 +76,19 @@ jobs:
         echo "$GITHUB_REF"      
         echo "$TAG"  
     -
-      name: Build and push release tag ${{ steps.vars.outputs.tag }}  
+      name: Build and push release tag release-${{ steps.vars.outputs.tag }}  
       id: docker_build_release
       uses: docker/build-push-action@v2
       with:
         file: ./Dockerfile
         push: true
-        tags: pppazos/baf-build:tci.${{ steps.vars.outputs.tag }}  
+        tags: pppazos/baf-build:tci.release-${{ steps.vars.outputs.tag }}    
     -
-      name: Build and push tag latest
-      id: docker_build_latest
-      uses: docker/build-push-action@v2
-      with:
-        file: ./Dockerfile
-        push: true
-        tags: pppazos/baf-build:tci.latest    
-    -
-      name: Build and push tag jdk8
+      name: Build and push tag jdk8-latest
       id: docker_build_jdk8
       uses: docker/build-push-action@v2
       with:
         file: ./Dockerfile.jdk8
         push: true
-        tags: pppazos/baf-build:tci.jdk8    
+        tags: pppazos/baf-build:tci.jdk8-latest
+
