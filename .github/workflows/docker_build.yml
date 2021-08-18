@@ -5,7 +5,8 @@ name: Docker build baf-build
 
 on:
   push:
-    branches: [ docker_build ]
+    tags:
+      - 'v*'
 
 jobs:
   docker:
@@ -14,6 +15,9 @@ jobs:
     - 
       name: Checkout
       uses: actions/checkout@v2
+    - name: Set output
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}      
     -
       name: Set up QEMU
       uses: docker/setup-qemu-action@v1
@@ -26,11 +30,30 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Show GitHub ref
+      run: |
+        echo "$GITHUB_REF"        
     -
-      name: Build and push
+      name: Build and push release tag ${{ github.ref }}
       id: docker_build
       uses: docker/build-push-action@v2
       with:
         file: ./Dockerfile
         push: true
-        tags: pppazos/baf-build:testci    
+        tags: pppazos/baf-build:tci.${{ github.ref }}  
+    -
+      name: Build and push tag latest
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        file: ./Dockerfile
+        push: true
+        tags: pppazos/baf-build:tci.latest    
+    -
+      name: Build and push tag jdk8
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        file: ./Dockerfile.jdk8
+        push: true
+        tags: pppazos/baf-build:tci.jdk8    
