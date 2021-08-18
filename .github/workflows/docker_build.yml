@@ -3,15 +3,18 @@
 #  - push on develop branch for latest tags 
 #  - create tag vx.y.z for release tags
 
-#TODO change docker_build to develop
+#TODO change docker_build to develop  test
 
 name: Docker image baf-build tagging
 
 on:
   create:
   push:
-      branches:
+    branches:
         - docker_build
+    paths:
+      - 'Dockerfile'        
+      - 'Dockerfile.jkd8'        
 
 jobs:
   # on push to develop branch, create docker tags latest and jdk8-latest
