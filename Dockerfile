@@ -2,6 +2,7 @@
 # docker build . -t baf-build
 # docker run -v $(pwd):/home/blockchain-automation-framework/ baf-build
 
+
 FROM ubuntu:20.04
 
 # Create working directory
