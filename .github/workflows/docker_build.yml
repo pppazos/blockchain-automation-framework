@@ -17,7 +17,7 @@ on:
     paths:
       - 'Dockerfile'        
       - 'Dockerfile.jkd8'
-      - 'platforms/r3-coerda/images/**'        
+      - 'platforms/r3-corda/images/**'        
 
 jobs:
   # on push to develop branch, create docker tags latest and jdk8-latest
