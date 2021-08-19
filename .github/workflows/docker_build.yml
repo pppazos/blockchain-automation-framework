@@ -128,7 +128,7 @@ jobs:
     - 
       name: Install dependencies
       run: |
-        DEBIAN_FRONTEND=noninteractive  apt-get update && apt-get install -y --no-install-recommends \
+        DEBIAN_FRONTEND=noninteractive  sudo apt-get update && sudo apt-get install -y --no-install-recommends \
                 build-essential \
                 openjdk-8-jdk \
                 maven \
