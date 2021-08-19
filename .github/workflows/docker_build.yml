@@ -153,15 +153,15 @@ jobs:
         mvn clean install -DskipTests  
     -
       name: Build and push cordaOS doorman release tag ${{ steps.vars.outputs.tag }}  
-      id: docker_build_release
+      id: corda_doorman_release
       uses: docker/build-push-action@v2
       with:
-        context: blockchain-automation-framework/platforms/r3-corda/images/doornam
+        context: blockchain-automation-framework/platforms/r3-corda/images/doorman
         push: true
         tags: pppazos/doorman-linuxkit:${{ steps.vars.outputs.tag }}    
     -
       name: Build and push cordaOS doorman release tag stable based on v${{ steps.vars.outputs.tag }}
-      id: docker_build_stable
+      id: corda_doorman_stable
       uses: docker/build-push-action@v2
       with:
         context: blockchain-automation-framework/platforms/r3-corda/images/doorman
@@ -169,7 +169,7 @@ jobs:
         tags:  pppazos/doorman-linuxkit:stable          
     -
       name: Build and push cordaOS networkmap release tag ${{ steps.vars.outputs.tag }}  
-      id: docker_build_release
+      id: corda_networkmap_release
       uses: docker/build-push-action@v2
       with:
         context: blockchain-automation-framework/platforms/r3-corda/images/networkmap
@@ -177,7 +177,7 @@ jobs:
         tags: pppazos/networkmap-linuxkit:${{ steps.vars.outputs.tag }}    
     -
       name: Build and push cordaOS networkmap release tag stable based on v${{ steps.vars.outputs.tag }}
-      id: docker_build_stable
+      id: corda_networkmap_stable
       uses: docker/build-push-action@v2
       with:
         context: blockchain-automation-framework/platforms/r3-corda/images/networkmap
