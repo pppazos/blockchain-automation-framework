@@ -128,17 +128,9 @@ jobs:
     - 
       name: Install dependencies
       run: |
-        DEBIAN_FRONTEND=noninteractive  sudo apt-get update && sudo apt-get install -y --no-install-recommends \
-                build-essential \
+        DEBIAN_FRONTEND="noninteractive"  sudo apt-get update && sudo apt-get install -y \
                 openjdk-8-jdk \
-                maven \
-                wget\
-                curl \
-                unzip \
-                openssh-client \
-                gcc \
-                git \
-                libdb-dev libleveldb-dev libsodium-dev zlib1g-dev libtinfo-dev 
+                maven
     - 
       name: corda builds
       run: |
