@@ -1,5 +1,8 @@
-# Build baf-build docker image 
-# triggered on merge on :
+# Build baf-build docker image triggered by :
+#  - push on develop branch for latest tags 
+#  - create tag vx.y.z for release tags
+#
+# Build corda os docker image triggered by :
 #  - push on develop branch for latest tags 
 #  - create tag vx.y.z for release tags
 
@@ -10,13 +13,15 @@ on:
   push:
     branches:
         - develop
+        - corda_docker_build
     paths:
       - 'Dockerfile'        
-      - 'Dockerfile.jkd8'        
+      - 'Dockerfile.jkd8'
+      - 'platforms/r3-coerda/images/**'        
 
 jobs:
   # on push to develop branch, create docker tags latest and jdk8-latest
-  latest:
+  baf-build-latest:
     if: ${{ startsWith(github.ref, 'refs/heads/develop') }}
     runs-on: ubuntu-latest
     steps:
@@ -52,7 +57,7 @@ jobs:
         push: true
         tags: hyperledgerlabs/baf-build:jdk8-latest   
   # on tag vx.y.z created, create docker tag stable, x.y.z and jdk8
-  release: 
+  baf-build-release: 
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     steps:
@@ -98,4 +103,85 @@ jobs:
         file: ./Dockerfile.jdk8
         push: true
         tags: hyperledgerlabs/baf-build:jdk8
+  cordaOS-latest: 
+    if: ${{ startsWith(github.ref, 'refs/heads/corda_docker_build') }}
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      name: Checkout
+      uses: actions/checkout@v2
+    - name: Set output
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/v}
+    -
+      name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    -
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    -
+      name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - 
+      name: Install dependencies
+      run: |
+        DEBIAN_FRONTEND=noninteractive  apt-get update && apt-get install -y --no-install-recommends \
+                build-essential \
+                openjdk-8-jdk \
+                maven \
+                wget\
+                curl \
+                unzip \
+                openssh-client \
+                gcc \
+                git \
+                libdb-dev libleveldb-dev libsodium-dev zlib1g-dev libtinfo-dev 
+    - 
+      name: corda builds
+      run: |
+        WDIR=`pwd`
+
+        echo "---- building networkmap ----"
+        cd ${WDIR}/blockchain-automation-framework/platforms/r3-corda/images/networkmap
+        mvn clean install -DskipTests   
+
+        echo "---- building doorman ----"
+        cd ${WDIR}/blockchain-automation-framework/platforms/r3-corda/images/doorman
+        mvn clean install -DskipTests  
+    -
+      name: Build and push cordaOS doorman release tag ${{ steps.vars.outputs.tag }}  
+      id: docker_build_release
+      uses: docker/build-push-action@v2
+      with:
+        context: blockchain-automation-framework/platforms/r3-corda/images/doornam
+        push: true
+        tags: pppazos/doorman-linuxkit:${{ steps.vars.outputs.tag }}    
+    -
+      name: Build and push cordaOS doorman release tag stable based on v${{ steps.vars.outputs.tag }}
+      id: docker_build_stable
+      uses: docker/build-push-action@v2
+      with:
+        context: blockchain-automation-framework/platforms/r3-corda/images/doorman
+        push: true
+        tags:  pppazos/doorman-linuxkit:stable          
+    -
+      name: Build and push cordaOS networkmap release tag ${{ steps.vars.outputs.tag }}  
+      id: docker_build_release
+      uses: docker/build-push-action@v2
+      with:
+        context: blockchain-automation-framework/platforms/r3-corda/images/networkmap
+        push: true
+        tags: pppazos/networkmap-linuxkit:${{ steps.vars.outputs.tag }}    
+    -
+      name: Build and push cordaOS networkmap release tag stable based on v${{ steps.vars.outputs.tag }}
+      id: docker_build_stable
+      uses: docker/build-push-action@v2
+      with:
+        context: blockchain-automation-framework/platforms/r3-corda/images/networkmap
+        push: true
+        tags:  pppazos/networkmap-linuxkit:stable    
+
 
