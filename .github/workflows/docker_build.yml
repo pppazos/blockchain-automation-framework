@@ -110,6 +110,11 @@ jobs:
     - 
       name: Checkout
       uses: actions/checkout@v2
+    - 
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '8'
     - name: Set output
       id: vars
       run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/v}
@@ -132,11 +137,13 @@ jobs:
         java -version
         update-alternatives --list java
 
-        sudo apt-get update
-        DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
-                nodejs openjdk-8-jdk 
-        java -version 
-        update-alternatives --list java       
+        mvn --version
+
+        #sudo apt-get update
+        #DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
+        #        nodejs openjdk-8-jdk 
+        #java -version 
+        #update-alternatives --list java       
         #DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
         #        maven
         java -version
