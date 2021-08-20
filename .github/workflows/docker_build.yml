@@ -132,13 +132,13 @@ jobs:
         java -version
         update-alternatives --list java
 
-        sudo apt-get update
-        DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
-                nodejs openjdk-8-jdk 
+        #sudo apt-get update
+        #DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
+        #        nodejs openjdk-8-jdk 
         java -version 
-        update-alternatives --list java       
-        DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
-                maven
+        #update-alternatives --list java       
+        #DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
+        #        maven
         java -version
         update-alternatives --list java
     - 
