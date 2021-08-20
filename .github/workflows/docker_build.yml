@@ -131,10 +131,12 @@ jobs:
         sudo apt-get update
         DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
                 nodejs openjdk-8-jdk 
-        java -version        
+        java -version 
+        update-alternatives --list java       
         DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
                 maven
         java -version
+        update-alternatives --list java
     - 
       name: corda builds
       run: |
