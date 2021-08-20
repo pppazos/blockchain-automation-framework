@@ -128,6 +128,10 @@ jobs:
     - 
       name: Install dependencies
       run: |
+        
+        java -version
+        update-alternatives --list java
+
         sudo apt-get update
         DEBIAN_FRONTEND="noninteractive" sudo apt-get install -y --no-install-recommends\
                 nodejs openjdk-8-jdk 
@@ -141,14 +145,17 @@ jobs:
       name: corda builds
       run: |
         WDIR=`pwd`
+        
+        java -version
+        update-alternatives --list java
 
         echo "---- building networkmap ----"
         cd ${WDIR}/platforms/r3-corda/images/networkmap
-        mvn clean install -DskipTests   
+        #mvn clean install -DskipTests   
 
         echo "---- building doorman ----"
         cd ${WDIR}/platforms/r3-corda/images/doorman
-        mvn clean install -DskipTests  
+        #mvn clean install -DskipTests  
     -
       name: Build and push cordaOS doorman release tag ${{ steps.vars.outputs.tag }}  
       id: corda_doorman_release
