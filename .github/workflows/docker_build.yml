@@ -6,7 +6,7 @@
 #  - push on develop branch for latest tags 
 #  - create tag vx.y.z for release tags
 
-name: Docker image baf-build tagging
+name: Docker images build
 
 on:
   create:
@@ -17,7 +17,8 @@ on:
     paths:
       - 'Dockerfile'        
       - 'Dockerfile.jkd8'
-      - 'platforms/r3-corda/images/**'        
+      - 'platforms/r3-corda/images/**'
+      - 'examples/supplychain-app/quorum/**'            
 
 jobs:
   # on push to develop branch, create docker tags latest and jdk8-latest
