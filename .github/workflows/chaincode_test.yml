@@ -1,10 +1,11 @@
 name: Chaincode tests
 on: 
   pull_request:
+  push:
 
 jobs:
   validate_fabric:
-    if: contains(github.event.pull_request.title, 'Fabric') || contains(github.event.pull_request.title, 'fabric')
+    #if: contains(github.event.pull_request.title, 'Fabric') || contains(github.event.pull_request.title, 'fabric')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -31,6 +32,9 @@ jobs:
     - 
       name: Test Stage all chaincodes.
       run: |
+        export GOROOT=/usr/local/go
+        export GOPATH=/opt/gopath
+        export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
         cd $GOPATH/src/github.com/chaincode/supplychain
         dep ensure
         go test -v
