@@ -45,6 +45,7 @@ spec:
         args:
         - |-
           #!/usr/bin/env bash
+          set -x
           validateVaultResponse () {
             if echo ${2} | grep "errors"; then
               echo "ERROR: unable to retrieve ${1}: ${2}"
@@ -92,6 +93,7 @@ spec:
             fi    
           fi 
           echo "Done checking for certificates in vault"
+          sleep 600
       containers:
       - name: generate-cryptomaterials
         image: {{ $.Values.image.node }}
@@ -122,6 +124,7 @@ spec:
         args:
         - |-
           #!/usr/bin/env sh
+          set -x
           apk update && apk add jq curl openssl;
           validateVaultResponse () {
             if echo ${2} | grep "errors"; then
