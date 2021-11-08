@@ -1,0 +1,83 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: storestoretessera
+  namespace: store-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: storestoretessera
+  helmVersion: v3
+  chart:
+    git: ssh://git@github.com/pppazos/blockchain-automation-framework.git
+    ref: gcp_quorum
+    path: platforms/quorum/charts/node_tessera  
+  values:
+    replicaCount: 1
+    metadata:
+      namespace: store-quo
+      labels:
+    images:
+      node: quorumengineering/quorum:21.4.2
+      alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+      tessera: quorumengineering/tessera:21.4.0
+      busybox: busybox
+      mysql: mysql/mysql-server:5.7
+    node:
+      name: store
+      status: default
+      consensus: ibft
+      subject: O=Store,OU=Store,L=40.73/-74/New York,C=US
+      mountPath: /etc/quorum/qdata
+      imagePullSecret: regcred
+      keystore: keystore_1
+      
+      servicetype: ClusterIP
+      lock: false
+      ports:
+        rpc: 8546
+        raft: 50401
+        tm: 443
+        quorum: 21000
+        db: 3306
+      dbname: demodb
+      mysqluser: demouser
+    vault:
+      address: http://vault.internal.dev2.gcp.iriago.com:20002
+      secretprefix: secretsv2/data/store-quo/crypto/store
+      serviceaccountname: vault-auth
+      keyname: quorum
+      tm_keyname: transaction
+      role: vault-role
+      authpath: quorumstore
+    tessera:
+      dburl: "jdbc:mysql://store-tessera:3306/demodb"
+      dbusername: demouser
+      url: "https://store.test.quorum.iriago.com:443"
+      clienturl: "http://store-tessera:8888" #TODO: Enable tls strict for q2t
+      othernodes:
+        - url: https://carrier.test.quorum.iriago.com
+        - url: https://manufacturer.test.quorum.iriago.com
+        - url: https://store.test.quorum.iriago.com
+        - url: https://warehouse.test.quorum.iriago.com
+      tls: "STRICT"
+      trust: "TOFU"
+    genesis: ewogICJjb25maWciOiB7CiAgICAiY2hhaW5JZCI6IDEwLAogICAgImhvbWVzdGVhZEJsb2NrIjogMCwKICAgICJlaXAxNTBCbG9jayI6IDAsCiAgICAiZWlwMTUwSGFzaCI6ICIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLAogICAgImVpcDE1NUJsb2NrIjogMCwKICAgICJlaXAxNThCbG9jayI6IDAsCiAgICAiYnl6YW50aXVtQmxvY2siOiAwLAogICAgImNvbnN0YW50aW5vcGxlQmxvY2siOiAwLAogICAgInBldGVyc2J1cmdCbG9jayI6IDAsCiAgICAiaXN0YW5idWxCbG9jayI6IDAsCiAgICAiaXN0YW5idWwiOiB7CiAgICAgICJlcG9jaCI6IDMwMDAwLAogICAgICAicG9saWN5IjogMCwKICAgICAgImNlaWwyTmJ5M0Jsb2NrIjogMAogICAgfSwKICAgICJ0eG5TaXplTGltaXQiOiAxMjgsCiAgICAicWlwNzE0QmxvY2siOiAwLAogICAgImlzTVBTIjogZmFsc2UsCiAgICAiaXNRdW9ydW0iOiB0cnVlLAogICAgIm1heENvZGVTaXplQ29uZmlnIjogWwogICAgICB7CiAgICAgICAgImJsb2NrIjogMCwKICAgICAgICAic2l6ZSI6IDEyOAogICAgICB9CiAgICBdCiAgfSwKICAibm9uY2UiOiAiMHgwIiwKICAidGltZXN0YW1wIjogIjB4NjE4OTQyY2IiLAogICJleHRyYURhdGEiOiAiMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwZjg5YWY4NTQ5NGQwMmY1NGFlNjkzNmM0OWRmYzkwNmQ2MjMwMGQwNTY1NzNkZGFmYjM5NDM2N2UxMzk4NGU3MTNkNTUyMWVjYTNlNjNiM2Y3YmZmYTliMmYyYWU5NDU1MmFhNGU2MWZjMGJlNDFiNGE4YWYxYTI0YjhlMzA4YTQwNzQzY2Q5NDE0OTM0NDY1ZTNlYTI5NjU0ODIwMzU4YWY0OWU2NDdjNDI1NTI3OWJiODQxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMGMwIiwKICAiZ2FzTGltaXQiOiAiMHhlMDAwMDAwMCIsCiAgImRpZmZpY3VsdHkiOiAiMHgxIiwKICAibWl4SGFzaCI6ICIweDYzNzQ2OTYzNjE2YzIwNjI3OTdhNjE2ZTc0Njk2ZTY1MjA2NjYxNzU2Yzc0MjA3NDZmNmM2NTcyNjE2ZTYzNjUiLAogICJjb2luYmFzZSI6ICIweDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAiLAogICJhbGxvYyI6IHsKICAgICIxNDkzNDQ2NWUzZWEyOTY1NDgyMDM1OGFmNDllNjQ3YzQyNTUyNzliIjogewogICAgICAiYmFsYW5jZSI6ICIweDQ0NmMzYjE1Zjk5MjY2ODdkMmM0MDUzNGZkYjU2NDAwMDAwMDAwMDAwMCIKICAgIH0sCiAgICAiMzY3ZTEzOTg0ZTcxM2Q1NTIxZWNhM2U2M2IzZjdiZmZhOWIyZjJhZSI6IHsKICAgICAgImJhbGFuY2UiOiAiMHg0NDZjM2IxNWY5OTI2Njg3ZDJjNDA1MzRmZGI1NjQwMDAwMDAwMDAwMDAiCiAgICB9LAogICAgIjU1MmFhNGU2MWZjMGJlNDFiNGE4YWYxYTI0YjhlMzA4YTQwNzQzY2QiOiB7CiAgICAgICJiYWxhbmNlIjogIjB4NDQ2YzNiMTVmOTkyNjY4N2QyYzQwNTM0ZmRiNTY0MDAwMDAwMDAwMDAwIgogICAgfSwKICAgICJkMDJmNTRhZTY5MzZjNDlkZmM5MDZkNjIzMDBkMDU2NTczZGRhZmIzIjogewogICAgICAiYmFsYW5jZSI6ICIweDQ0NmMzYjE1Zjk5MjY2ODdkMmM0MDUzNGZkYjU2NDAwMDAwMDAwMDAwMCIKICAgIH0KICB9LAogICJudW1iZXIiOiAiMHgwIiwKICAiZ2FzVXNlZCI6ICIweDAiLAogICJwYXJlbnRIYXNoIjogIjB4MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIKfQ==
+    staticnodes: 
+      [
+    "enode://eb5c76766e88e3901eef5f3b6f4c1f5cbc86f7fb008308715a74c579965d7385abc4a4f3ef6cd60355110df6602788cd35cd718ef32c666aed619cb0d4299621@carrier.test.quorum.iriago.com:15030?discport=0",
+    "enode://b1f081deb220ec103d4dbcbe0bda400a7cf5d9404bf2b3bbcd5eef90a25bfc2a9d55049d735f52c2dfa4f9296ad9b990018cf4fbd042c4fd65c5e4faa4563afe@manufacturer.test.quorum.iriago.com:15033?discport=0",
+    "enode://3aa4d2755f38b30e96e5cee27f5375cf4391097abeb52b37a67575f6cc78595b0c36effcc19170b459f3b2f06379bfd5433e99f0e3f36bff4a50975ab53e843c@store.test.quorum.iriago.com:15036?discport=0",
+    "enode://ddf855a740da4d78cef25988eae1f0b246c90ab4b648c73b1423c299e75b3ae39d93f5b5391a5a2a397574b0922f9e2a1ca7673f2769a6d53ef42c2483ea9adc@warehouse.test.quorum.iriago.com:15039?discport=0"
+]
+    proxy:
+      provider: "ambassador"
+      external_url: store.test.quorum.iriago.com
+      portTM: 443
+      rpcport: 15037
+      quorumport: 15036
+      clientport: 8888
+    storage:
+      storageclassname: gcpstorageclass
+      storagesize: 1Gi
+      dbstorage: 1Gi
