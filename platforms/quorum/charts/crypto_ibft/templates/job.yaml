@@ -93,7 +93,6 @@ spec:
             fi    
           fi 
           echo "Done checking for certificates in vault"
-          sleep 600
       containers:
       - name: generate-cryptomaterials
         image: {{ $.Values.image.node }}
