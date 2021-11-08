@@ -1,0 +1,31 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: manufacturer-ibft-job
+  namespace: manufacturer-quo
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: manufacturer-ibft-job
+  chart:
+    git: ssh://git@github.com/pppazos/blockchain-automation-framework.git
+    ref: gcp
+    path: platforms/quorum/charts/crypto_ibft
+  values:
+    peer:
+      name: manufacturer
+      gethPassphrase: 12345
+    metadata:
+      name: manufacturer-ibft-job
+      namespace: manufacturer-quo
+    image:
+      initContainerName: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+      node: quorumengineering/quorum:21.4.2
+      pullPolicy: Always
+    acceptLicense: YES
+    vault:
+      address: http://vault.internal.dev2.gcp.iriago.com:20002
+      role: vault-role
+      authpath: quorummanufacturer
+      serviceaccountname: vault-auth
+      certsecretprefix: secretsv2/data/manufacturer-quo
