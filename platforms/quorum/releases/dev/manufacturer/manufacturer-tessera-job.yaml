@@ -1,0 +1,29 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: manufacturer-tessera-job
+  namespace: manufacturer-quo
+  annotations:
+    flux.weave.works/automated: "false"
+spec:
+  releaseName: manufacturer-tessera-job
+  chart:
+    path: platforms/quorum/charts/tessera_key_mgmt
+    git: ssh://git@github.com/pppazos/blockchain-automation-framework.git
+    ref: gcp_quorum
+  values:
+    peer:
+      name: manufacturer  
+    metadata:
+      name: manufacturer-tessera-job
+      namespace: manufacturer-quo    
+    image:      
+      repository: quorumengineering/tessera:21.4.0
+      pullSecret: regcred
+    vault:
+      address: http://vault.internal.dev2.gcp.iriago.com:20002
+      authpath: quorummanufacturer
+      keyprefix: manufacturer-quo/crypto
+      role: vault-role
+      serviceaccountname: vault-auth
+      tmprefix: secretsv2/data/manufacturer-quo/crypto
