@@ -1,0 +1,29 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: carrier-tessera-job
+  namespace: carrier-quo
+  annotations:
+    flux.weave.works/automated: "false"
+spec:
+  releaseName: carrier-tessera-job
+  chart:
+    path: platforms/quorum/charts/tessera_key_mgmt
+    git: ssh://git@github.com/pppazos/blockchain-automation-framework.git
+    ref: gcp_quorum
+  values:
+    peer:
+      name: carrier  
+    metadata:
+      name: carrier-tessera-job
+      namespace: carrier-quo    
+    image:      
+      repository: quorumengineering/tessera:21.4.0
+      pullSecret: regcred
+    vault:
+      address: http://vault.internal.dev.gcp.inteli-poc.com:20002
+      authpath: quorumcarrier
+      keyprefix: carrier-quo/crypto
+      role: vault-role
+      serviceaccountname: vault-auth
+      tmprefix: secretsv2/data/carrier-quo/crypto
